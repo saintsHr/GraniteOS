@@ -7,7 +7,8 @@ all:
 	mkdir -p isodir/boot/grub
 
 	i686-elf-as boot/boot.s -o build/boot.o
-	i686-elf-gcc -c $(src) -o build/$$(basename $$f .c).o -Iinclude -std=gnu99 -ffreestanding -O2 -Wall -Wextra
+	i686-elf-gcc -c $(src) -Iinclude -std=gnu99 -ffreestanding -O2 -Wall -Wextra
+	mv *.o build/
 	i686-elf-gcc -T linker.ld -o bin/granite.bin -ffreestanding -O2 -nostdlib build/*.o -lgcc
 
 	cp bin/granite.bin isodir/boot/granite.bin
