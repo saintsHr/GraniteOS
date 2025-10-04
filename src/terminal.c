@@ -1,11 +1,12 @@
 #include <stdint.h>
 #include "helpers.h"
-
-#define VGA_MEMORY 0xB8000
-volatile uint8_t* vga = (volatile uint8_t*) VGA_MEMORY;
+#include "terminal.h"
 
 uint8_t term_x = 0;
 uint8_t term_y = 0;
+
+#define VGA_MEMORY 0xB8000
+volatile uint8_t* vga = (volatile uint8_t*) VGA_MEMORY;
 
 void move_cursor(uint8_t x, uint8_t y){
     uint16_t pos = y * 80 + x;
@@ -43,4 +44,17 @@ void print(char* srt, char color){
         term_x++;
         move_cursor(term_x, term_y);
     }
+}
+
+void clear(char color){
+    for (uint8_t i = 0; i < 20; i++){
+        for (uint8_t j = 0; j < 80; j++){
+            putEntry(' ', color);
+            term_x = j;
+        }
+        term_y = i;
+    }
+    term_x = 0;
+    term_y = 0;
+    move_cursor(0, 0);
 }
