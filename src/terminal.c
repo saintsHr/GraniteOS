@@ -38,6 +38,7 @@ void print(char* srt, char color){
         if (term_y >= 25){
             term_y = 0;
             term_x = 0;
+            clear(0x00);
         }
 
         putEntry(srt[i], color);
@@ -47,7 +48,7 @@ void print(char* srt, char color){
 }
 
 void clear(char color){
-    for (uint8_t i = 0; i < 20; i++){
+    for (uint8_t i = 0; i < 26; i++){
         for (uint8_t j = 0; j < 80; j++){
             putEntry(' ', color);
             term_x = j;

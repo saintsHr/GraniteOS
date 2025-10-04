@@ -6,8 +6,37 @@
 
 volatile uint32_t ticks = 0;
 
-void wait(uint64_t cycles){
-    for (uint64_t i = 0; i < cycles; i++){
+void wait(uint32_t cycles){
+    for (uint32_t i = 0; i < cycles; i++){
         asm("nop");
     }
+}
+
+#include <stdint.h>
+
+#include <stdint.h>
+
+char* uint_to_str(uint32_t num){
+    static char str[12];
+    char buffer[11];
+    int i = 0;
+
+    if (num == 0){
+        str[0] = '0';
+        str[1] = '\0';
+        return str;
+    }
+
+    while (num > 0){
+        buffer[i++] = '0' + (num % 10);
+        num /= 10;
+    }
+
+    int j = 0;
+    while (i > 0){
+        str[j++] = buffer[--i];
+    }
+    str[j] = '\0';
+
+    return str;
 }

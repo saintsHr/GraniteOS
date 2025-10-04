@@ -26,7 +26,14 @@ stack_top:
 
 _start:
     mov $stack_top, %esp
+
+    mov %eax, %edi
+    mov %ebx, %esi
+    push %esi
+    push %edi
+
     call kernel_main
+
     cli
 1:  hlt
     jmp 1b
