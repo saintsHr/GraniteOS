@@ -1,6 +1,5 @@
-#include "terminal/terminal.h"
+#include "terminal.h"
 
-void kernel_main(void){
-    terminal_initialize();
-    terminal_writestring("Hello from GraniteOS!");
+void kernel_main(void) {
+    print("Hello from Granite!", 0x0F);
 }

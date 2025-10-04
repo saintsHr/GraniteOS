@@ -18,4 +18,4 @@ all:
 
 .SILENT:
 run:
-	qemu-system-i386 -cdrom bin/granite.iso
+	qemu-system-i386 -cdrom bin/granite.iso -vga std
