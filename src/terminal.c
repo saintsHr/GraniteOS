@@ -27,9 +27,14 @@ inline void putEntry(char ch, char color){
     vga[offset + 1] = color;
 }
 
-void print(char* srt, char color){
+void print(char* str, char color){
     for (int i = 0;; i++){
-        if (srt[i] == '\0') break;
+        if (str[i] == '\0') break;
+        if (str[i] == '\n'){
+            term_y++;
+            term_x = 0;
+            continue;
+        }
 
         if (term_x >= 80){
             term_y++;
@@ -41,7 +46,7 @@ void print(char* srt, char color){
             clear(0x00);
         }
 
-        putEntry(srt[i], color);
+        putEntry(str[i], color);
         term_x++;
         move_cursor(term_x, term_y);
     }

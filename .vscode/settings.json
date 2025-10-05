@@ -2,6 +2,7 @@
     "files.associations": {
         "terminal.h": "c",
         "stdint.h": "c",
-        "helpers.h": "c"
+        "helpers.h": "c",
+        "cstdint": "c"
     }
 }

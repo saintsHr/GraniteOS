@@ -1,5 +1,6 @@
 #include "terminal.h"
 #include "helpers.h"
+#include "shell.h"
 
 typedef struct multiboot_info {
     uint32_t flags;            // Flags indicating which fields are valid
@@ -25,10 +26,27 @@ typedef struct multiboot_info {
     uint16_t vbe_interface_len; // VBE interface length
 } multiboot_info_t;
 
+void welcome(multiboot_info_t* mb_info){
+    print("=============================", 0x07);
+
+    print("\n [Welcome to GraniteOS]\n\n", 0x07);
+
+    print(" Version:        v0.0.0\n", 0x07);
+
+    uint32_t tmem = (mb_info->mem_lower + mb_info->mem_upper) / 1024;
+    print(" Total Memory:   ", 0x07);
+    print(uint_to_str(tmem), 0x07);
+    print(" MB\n", 0x07);
+
+    print("=============================", 0x07);
+    move_cursor(0, 7);
+    prompt();
+}
+
 void kernel_main(uint32_t magic, multiboot_info_t* mb_info){
     if (magic != 0x2BADB002) return;
 
-    
+    welcome(mb_info);
 
     while (1);
 }
