@@ -40,3 +40,11 @@ char* uint_to_str(uint32_t num){
 
     return str;
 }
+
+int strcmp(const char* s1, const char* s2){
+    while (*s1 && (*s1 == *s2)){
+        s1++;
+        s2++;
+    }
+    return (unsigned char)*s1 - (unsigned char)*s2;
+}

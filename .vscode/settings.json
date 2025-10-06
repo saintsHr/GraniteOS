@@ -3,6 +3,8 @@
         "terminal.h": "c",
         "stdint.h": "c",
         "helpers.h": "c",
-        "cstdint": "c"
+        "cstdint": "c",
+        "shell.h": "c",
+        "colors.h": "c"
     }
 }

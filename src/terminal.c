@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include "helpers.h"
 #include "terminal.h"
+#include "colors.h"
 
 uint8_t term_x = 0;
 uint8_t term_y = 0;
@@ -43,7 +44,7 @@ void print(char* str, char color){
         if (term_y >= 25){
             term_y = 0;
             term_x = 0;
-            clear(0x00);
+            clear(VGA_LGRAY);
         }
 
         putEntry(str[i], color);

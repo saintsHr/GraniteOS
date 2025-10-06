@@ -1,6 +1,8 @@
 #include "terminal.h"
 #include "helpers.h"
 #include "shell.h"
+#include "colors.h"
+#include "keyboard.h"
 
 typedef struct multiboot_info {
     uint32_t flags;            // Flags indicating which fields are valid
@@ -39,7 +41,8 @@ void welcome(multiboot_info_t* mb_info){
     print(" MB\n", 0x07);
 
     print("=============================", 0x07);
-    move_cursor(0, 7);
+    move_cursor(0, 6);
+    print("\n", VGA_BLACK);
     prompt();
 }
 
@@ -48,5 +51,7 @@ void kernel_main(uint32_t magic, multiboot_info_t* mb_info){
 
     welcome(mb_info);
 
-    while (1);
+    while (1){
+        keyboard_handler();
+    }
 }
