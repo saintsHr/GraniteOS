@@ -18,4 +18,4 @@ all:
 
 .SILENT:
 run:
-	qemu-system-i386 -m 2048 -cdrom bin/granite.iso -drive file=disk.img,format=raw,if=ide -boot d
+	qemu-system-i386 -m 2048 -cdrom bin/granite.iso -boot d

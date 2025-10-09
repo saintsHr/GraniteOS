@@ -12,9 +12,8 @@ const char scancode_to_ascii[128] = {
     '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 0, '*', 0, ' '
 };
 
-bool keyboard_data_ready() {
-    uint8_t status = inb(0x64);
-    return status & 0x01;
+bool keyboard_data_ready(){
+    return inb(0x64) & 0x01;
 }
 
 uint8_t read_keyboard_scancode() {

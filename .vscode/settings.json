@@ -5,6 +5,7 @@
         "helpers.h": "c",
         "cstdint": "c",
         "shell.h": "c",
-        "colors.h": "c"
+        "colors.h": "c",
+        "keyboard.h": "c"
     }
 }
