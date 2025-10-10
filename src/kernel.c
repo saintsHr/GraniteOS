@@ -28,18 +28,79 @@ typedef struct multiboot_info {
     uint16_t vbe_interface_len; // VBE interface length
 } multiboot_info_t;
 
-void welcome(multiboot_info_t* mb_info){
+void disInfo(multiboot_info_t* mb_info){
+    char* info_head = "[ INFO ] ";
+
+    // Print multiboot1 flags
+    print(info_head ,VGA_CYAN);
+    print("Flags: " ,VGA_LGRAY);
+    print(uint_to_str(mb_info->flags), VGA_LGRAY);
+    print("\n", VGA_LGRAY);
+    wait(10000000);
+
+    // Print total RAM in MB
+    char* strmem = uint_to_str((mb_info->mem_lower + mb_info->mem_upper) / 1024);
+    print(info_head, VGA_CYAN);
+    print("Total memory: ", VGA_LGRAY);
+    print(strmem, VGA_LGRAY);
+    print(" MB\n", VGA_LGRAY);
+    wait(10000000);
+
+    // Print boot device if available
+    if (mb_info->flags & 0x2) {
+        print(info_head, VGA_CYAN);
+        print("Boot device: 0x", VGA_LGRAY);
+        print(uint_to_str(mb_info->boot_device), VGA_LGRAY);
+        print("\n", VGA_LGRAY);
+    }
+    wait(10000000);
+
+    // Print kernel cmdline if available
+    if (mb_info->flags & 0x4) {
+        print(info_head, VGA_CYAN);
+        print("Kernel cmdline: ", VGA_LGRAY);
+        print((char*)mb_info->cmdline, VGA_LGRAY);
+        print("\n", VGA_LGRAY);
+    }
+    wait(10000000);
+
+    // Print bootloader name if available
+    if (mb_info->flags & 0x200) {
+        print(info_head, VGA_CYAN);
+        print("Bootloader: ", VGA_LGRAY);
+        print((char*)mb_info->boot_loader_name, VGA_LGRAY);
+        print("\n", VGA_LGRAY);
+    }
+    wait(10000000);
+
+    // Print drives BIOS info if available
+    if (mb_info->flags & 0x80) {
+        print(info_head, VGA_CYAN);
+        print("Drives info at: 0x", VGA_LGRAY);
+        print(uint_to_str(mb_info->drives_addr), VGA_LGRAY);
+        print(" (length: ", VGA_LGRAY);
+        print(uint_to_str(mb_info->drives_length), VGA_LGRAY);
+        print(" bytes)\n", VGA_LGRAY);
+    }
+    wait(10000000);
+
+    // Print VBE info if available
+    if (mb_info->flags & 0x800) {
+        print(info_head, VGA_CYAN);
+        print("VBE mode: ", VGA_LGRAY);
+        print(uint_to_str(mb_info->vbe_mode), VGA_LGRAY);
+        print("\n", VGA_LGRAY);
+
+        print(info_head, VGA_CYAN);
+        print("VBE mode info at: 0x", VGA_LGRAY);
+        print(uint_to_str(mb_info->vbe_mode_info), VGA_LGRAY);
+        print("\n", VGA_LGRAY);
+    }
+}
+void welcome(){
     print("=============================", 0x07);
-
     print("\n [Welcome to GraniteOS]\n\n", 0x07);
-
     print(" Version:        v0.0.0\n", 0x07);
-
-    uint32_t tmem = (mb_info->mem_lower + mb_info->mem_upper) / 1024;
-    print(" Total Memory:   ", 0x07);
-    print(uint_to_str(tmem), 0x07);
-    print(" MB\n", 0x07);
-
     print("=============================", 0x07);
     move_cursor(0, 6);
     print("\n", VGA_BLACK);
@@ -49,7 +110,19 @@ void welcome(multiboot_info_t* mb_info){
 void kernel_main(uint32_t magic, multiboot_info_t* mb_info){
     if (magic != 0x2BADB002) return;
 
-    welcome(mb_info);
+    disInfo(mb_info);
+
+    print("\n\nBooting", VGA_LGRAY);
+    wait(75000000);
+    print(" .", VGA_LGRAY);
+    wait(75000000);
+    print(" .", VGA_LGRAY);
+    wait(75000000);
+    print(" .", VGA_LGRAY);
+    wait(150000000);
+
+    clear(VGA_LGRAY);
+    welcome();
 
     while (1){
         keyboard_handler();
