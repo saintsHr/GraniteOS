@@ -55,8 +55,7 @@ void keyboard_handler() {
         putEntry(c, VGA_LGRAY);
         term_x++;
         if (term_x >= 80) {
-            term_x = 0;
-            term_y++;
+            return;
         }
         if (term_y >= 25) {
             term_y = 0;
