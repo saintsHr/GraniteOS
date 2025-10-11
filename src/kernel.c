@@ -55,15 +55,6 @@ void disInfo(multiboot_info_t* mb_info){
     }
     wait(10000000);
 
-    // Print kernel cmdline if available
-    if (mb_info->flags & 0x4) {
-        print(info_head, VGA_CYAN);
-        print("Kernel cmdline: ", VGA_LGRAY);
-        print((char*)mb_info->cmdline, VGA_LGRAY);
-        print("\n", VGA_LGRAY);
-    }
-    wait(10000000);
-
     // Print bootloader name if available
     if (mb_info->flags & 0x200) {
         print(info_head, VGA_CYAN);

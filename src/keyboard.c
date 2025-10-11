@@ -26,6 +26,7 @@ uint8_t read_keyboard_scancode() {
 char get_char_from_keyboard() {
     uint8_t code = read_keyboard_scancode();
     if (code & 0x80) return 0;
+    if (code >= sizeof(scancode_to_ascii)) return 0;
     return scancode_to_ascii[code];
 }
 
@@ -33,7 +34,7 @@ void keyboard_handler() {
     char c = get_char_from_keyboard();
     if (!c) return;
 
-    if (c == '\n'){
+    if (c == '\n') {
         term_y++;
         term_x = 0;
         prompt();
@@ -43,24 +44,19 @@ void keyboard_handler() {
             prompt();
         }
         move_cursor(term_x, term_y);
-    }
+    } 
     else if (c == '\b') {
         if (term_x > 9) {
             term_x--;
+            putEntry(' ', VGA_LGRAY);
+            move_cursor(term_x, term_y);
         }
-        putEntry(' ', VGA_BLACK);
-        move_cursor(term_x, term_y);
-    }
+    } 
     else {
-        putEntry(c, VGA_LGRAY);
-        term_x++;
-        if (term_x >= 80) {
-            return;
+        if (term_x < 79) {
+            putEntry(c, VGA_LGRAY);
+            term_x++;
+            move_cursor(term_x, term_y);
         }
-        if (term_y >= 25) {
-            term_y = 0;
-            clear(0x00);
-        }
-        move_cursor(term_x, term_y);
     }
 }
