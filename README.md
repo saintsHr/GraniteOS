@@ -1,4 +1,5 @@
 ![Shield](https://img.shields.io/github/commit-activity/t/saintsHr/GraniteOS)
+![Shield](https://img.shields.io/github/contributors/saintsHr/GraniteOS)
 
 # GraniteOS
 this is an hobby os that im working on for learning and mostly fun, so nothing here is definitive or professional.
