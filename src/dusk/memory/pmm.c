@@ -71,8 +71,14 @@ void pmm_init(const struct multiboot_info* mbi) {
 		entry = (struct multiboot_mmap_entry*)((uint32_t)entry + entry->size + sizeof(entry->size));
 	}
 
+	// bitmap region
 	pmm_reserve_region(0, pmm_bitmap_end);
+
+	// kernel code region
 	pmm_reserve_region(_kernel_start, _kernel_end);
+
+	// sentinel value (do not remove!)
+	pmm_reserve_region(0x00000000, 1);
 }
 
 void pmm_free_page(void* addr) {
