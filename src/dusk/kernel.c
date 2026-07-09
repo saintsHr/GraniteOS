@@ -1,5 +1,6 @@
 #include "dusk/interrupts/idt.h"
 #include "dusk/interrupts/pic.h"
+#include "dusk/memory/vmm.h"
 #include "dusk/multiboot.h"
 #include "dusk/memory/pmm.h"
 #include "dusk/vga.h"
@@ -31,9 +32,9 @@ void kpanic(const char* msg) {
 void kinit(const struct multiboot_info* mbi) {
     __asm__ volatile ("cli");
     serial_init();
+    pmm_init(mbi);
     idt_init();
     pic_remap(0x20, 0x28);
-    pmm_init(mbi);
     __asm__ volatile ("sti");
 }
 
@@ -52,7 +53,6 @@ void kmain(struct multiboot_info* mbi, uint32_t magic) {
     vga_set_color(VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK);
 
     vga_print("Hello, Kernel!");
-    serial_print("Hello, Kernel!");
 
     while (1);
 }
