@@ -1,4 +1,5 @@
 #include "dusk/memory/pmm.h"
+#include "dusk/memory/mem_util.h"
 #include "dusk/multiboot.h"
 #include <stdbool.h>
 #include <stdint.h>
@@ -34,7 +35,10 @@ static inline bool pmm_test_bit(uint32_t page) {
 }
 
 void pmm_init(const struct multiboot_info* mbi) {
-	pmm_bitmap = &_kernel_end;
+	pmm_bitmap = (uint32_t*)align_up(
+	    (uint32_t)&_kernel_end,
+	    PMM_PAGE_SIZE
+	);
 	
 	struct multiboot_mmap_entry* entry;
 	entry = (struct multiboot_mmap_entry*) mbi->mmap_addr;
@@ -50,10 +54,12 @@ void pmm_init(const struct multiboot_info* mbi) {
 
 	pmm_total_pages = highest_addr / PMM_PAGE_SIZE;
 
-	pmm_bitmap_end = (uint32_t)&_kernel_end + (pmm_total_pages / 8);
+	uint32_t bitmap_words = (pmm_total_pages + 31) / 32;
+	uint32_t bitmap_bytes = bitmap_words * sizeof(uint32_t);
 
-	uint32_t bitmap_size = pmm_total_pages / 32;
-	for (uint32_t i = 0; i < bitmap_size; i++) {
+	pmm_bitmap_end = (uint32_t)pmm_bitmap + bitmap_bytes;
+
+	for (uint32_t i = 0; i < bitmap_words; i++) {
 	    pmm_bitmap[i] = 0xFFFFFFFF;
 	}
 
@@ -72,7 +78,10 @@ void pmm_init(const struct multiboot_info* mbi) {
 	}
 
 	// bitmap region
-	pmm_reserve_region(0, pmm_bitmap_end);
+	pmm_reserve_region(
+    	(uint32_t)pmm_bitmap,
+    	bitmap_bytes
+	);
 
 	// kernel code region
 	pmm_reserve_region(
@@ -81,7 +90,10 @@ void pmm_init(const struct multiboot_info* mbi) {
 	);
 
 	// sentinel value (do not remove!)
-	pmm_reserve_region(0x00000000, 1);
+	pmm_reserve_region(
+		0x00000000,
+		1
+	);
 }
 
 void pmm_free_page(void* addr) {
@@ -100,4 +112,12 @@ void* pmm_alloc_page(void) {
 	}
 
 	return 0;
+}
+
+uint32_t pmm_get_bitmap_start(void) {
+    return (uint32_t)pmm_bitmap;
+}
+
+uint32_t pmm_get_bitmap_end(void) {
+    return pmm_bitmap_end;
 }

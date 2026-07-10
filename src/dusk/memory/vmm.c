@@ -2,7 +2,6 @@
 #include "dusk/memory/pmm.h"
 #include "dusk/memory/mem_util.h"
 #include "dusk/kernel.h"
-#include "dusk/serial.h"
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
@@ -18,24 +17,21 @@ static inline void load_cr3(page_directory_t* directory);
 
 static inline void tlb_flush(void);
 
+static void map_boot();
+
 static page_directory_t* kernel_directory = NULL;
 
 extern uint32_t _kernel_start;
 extern uint32_t _kernel_end;
 
-void vmm_init(void) {
+void vmm_init() {
+    disable_paging();
+
     kernel_directory = pmm_alloc_page();
     if (!kernel_directory) kpanic("[Memory] Out of physical memory");
     set_memory(kernel_directory, 0, PMM_PAGE_SIZE);
 
-    // maps 16mib of memory (temporary)
-    vmm_map_range(
-        0x00000000,
-        0x01000000,
-        0x00000000,
-        VMM_PAGE_PRESENT | VMM_PAGE_WRITE,
-        kernel_directory
-    );
+    map_boot();
 
     load_cr3(kernel_directory);
 
@@ -192,4 +188,33 @@ static inline uint16_t get_table_index(uint32_t virt_addr) {
 
 static inline uint16_t get_offset(uint32_t virt_addr) {
     return virt_addr & 0xFFF;
+}
+
+static void map_boot() {
+    // maps kernel
+    vmm_map_range(
+        (uint32_t)&_kernel_start,
+        (uint32_t)&_kernel_end,
+        (uint32_t)&_kernel_start,
+        VMM_PAGE_PRESENT | VMM_PAGE_WRITE,
+        kernel_directory
+    );
+
+    // maps bitmap
+    vmm_map_range(
+        pmm_get_bitmap_start(),
+        pmm_get_bitmap_end(),
+        pmm_get_bitmap_start(),
+        VMM_PAGE_PRESENT | VMM_PAGE_WRITE,
+        kernel_directory
+    );
+
+    // maps vga text mode
+    vmm_map_range(
+        0x000B8000,
+        0x000B9000,
+        0x000B8000,
+        VMM_PAGE_PRESENT | VMM_PAGE_WRITE,
+        kernel_directory
+    );
 }

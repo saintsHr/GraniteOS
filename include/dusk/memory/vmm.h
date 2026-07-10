@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include "dusk/multiboot.h"
 
 #define VMM_PAGE_PRESENT  0x00000001
 #define VMM_PAGE_WRITE    0x00000002
@@ -16,7 +17,7 @@ typedef struct {
     page_entry_t entries[1024];
 } page_table_t;
 
-void vmm_init(void);
+void vmm_init();
 
 void vmm_map(uint32_t virt_addr, uint32_t phys_addr, uint32_t flags, page_directory_t* directory);
 void vmm_unmap(uint32_t virt_addr, page_directory_t* directory);
