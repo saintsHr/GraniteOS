@@ -77,6 +77,12 @@ void pmm_init(const struct multiboot_info* mbi) {
 		entry = (struct multiboot_mmap_entry*)((uint32_t)entry + entry->size + sizeof(entry->size));
 	}
 
+	// boot region
+	pmm_reserve_region(
+	    0x00000000,
+	    0x00100000
+	);
+
 	// bitmap region
 	pmm_reserve_region(
     	(uint32_t)pmm_bitmap,
@@ -111,7 +117,7 @@ void* pmm_alloc_page(void) {
 		}
 	}
 
-	return 0;
+	return 0x00000000;
 }
 
 uint32_t pmm_get_bitmap_start(void) {
