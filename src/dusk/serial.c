@@ -4,6 +4,7 @@
 #define COM1 0x3F8
 
 static inline void serial_put_char(char c) {
+    while (!(io_inb(COM1 + 5) & 0x20));
     io_outb(COM1, c);
 }
 

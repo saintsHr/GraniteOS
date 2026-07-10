@@ -75,7 +75,10 @@ void pmm_init(const struct multiboot_info* mbi) {
 	pmm_reserve_region(0, pmm_bitmap_end);
 
 	// kernel code region
-	pmm_reserve_region(_kernel_start, _kernel_end);
+	pmm_reserve_region(
+    	(uint32_t)&_kernel_start,
+    	(uint32_t)&_kernel_end - (uint32_t)&_kernel_start
+	);
 
 	// sentinel value (do not remove!)
 	pmm_reserve_region(0x00000000, 1);

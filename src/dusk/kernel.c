@@ -31,10 +31,15 @@ void kpanic(const char* msg) {
 
 void kinit(const struct multiboot_info* mbi) {
     __asm__ volatile ("cli");
+
     serial_init();
-    pmm_init(mbi);
+
     idt_init();
     pic_remap(0x20, 0x28);
+
+    pmm_init(mbi);
+    vmm_init();
+
     __asm__ volatile ("sti");
 }
 
